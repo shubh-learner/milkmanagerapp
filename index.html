@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Milk Balance Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen" class="screen">
+    <div class="auth-card">
+      <div class="brand">
+        <span class="brand-icon">🥛</span>
+        <h1>Milk Manager App</h1>
+        <p class="brand-sub">Your daily dairy ledger</p>
+      </div>
+
+      <div class="tab-row">
+        <button class="tab active" data-tab="login">Sign In</button>
+        <button class="tab" data-tab="signup">Register</button>
+      </div>
+
+      <div id="auth-error" class="error-msg hidden"></div>
+
+      <form id="auth-form">
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="auth-email" placeholder="you@example.com" required />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="auth-password" placeholder="••••••••" required />
+        </div>
+        <div class="field hidden" id="confirm-field">
+          <label>Confirm Password</label>
+          <input type="password" id="auth-confirm" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="btn-primary" id="auth-submit">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- APP SCREEN -->
+  <div id="app-screen" class="screen hidden">
+
+    <!-- HEADER -->
+    <header>
+      <div class="header-left">
+        <span class="brand-icon">🥛</span>
+        <span class="app-title">Milk Manager App</span>
+      </div>
+      <div class="header-right">
+        <span id="user-label"></span>
+        <button id="logout-btn" class="btn-ghost">Sign Out</button>
+      </div>
+    </header>
+        <!-- NAV TABS -->
+    <nav class="app-nav">
+      <button class="nav-tab active" data-page="dashboard">📊 Dashboard</button>
+      <button class="nav-tab" data-page="log">📓 Entries Log</button>
+    </nav>
+
+    <main>
+      <!-- PAGE: DASHBOARD -->
+      <div id="page-dashboard" class="page">
+        <!-- SUMMARY CARDS -->
+        <section class="summary-section">
+          <div class="summary-toggle">
+            <button class="toggle-btn active" data-range="month">This Month</button>
+            <button class="toggle-btn" data-range="all">All Time</button>
+          </div>
+          <div class="cards-row">
+            <div class="card cow-card">
+              <div class="card-label">🐄 Cow Milk</div>
+              <div class="card-liters" id="sum-cow-liters">0 L</div>
+              <div class="card-cost" id="sum-cow-cost">₹0.00</div>
+            </div>
+            <div class="card buffalo-card">
+              <div class="card-label">🐃 Buffalo Milk</div>
+              <div class="card-liters" id="sum-buf-liters">0 L</div>
+              <div class="card-cost" id="sum-buf-cost">₹0.00</div>
+            </div>
+            <div class="card total-card">
+              <div class="card-label">📋 Total Due</div>
+              <div class="card-liters" id="sum-total-liters">0 L</div>
+              <div class="card-cost grand" id="sum-total-cost">₹0.00</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="two-col">
+
+          <!-- LEFT: ADD ENTRY + PRICES -->
+          <aside>
+
+            <!-- PRICE SETTINGS -->
+            <div class="panel">
+              <h2 class="panel-title">⚙️ Price Settings</h2>
+              <div class="field">
+                <label>Cow Milk (₹ per litre)</label>
+                <input type="number" id="price-cow" min="0" step="0.5" placeholder="e.g. 55" />
+              </div>
+              <div class="field">
+                <label>Buffalo Milk (₹ per litre)</label>
+                <input type="number" id="price-buf" min="0" step="0.5" placeholder="e.g. 70" />
+              </div>
+              <button class="btn-secondary" id="save-prices-btn">Save Prices</button>
+              <div id="price-saved-msg" class="success-msg hidden">✓ Prices saved!</div>
+            </div>
+
+            <!-- ADD ENTRY -->
+            
+          <!-- ADD ENTRY — cow + buffalo together -->
+          <div class="panel">
+            <h2 class="panel-title">➕ Add Daily Entry</h2>
+            
+
+              <div class="field">
+                <label>Date</label>
+                <input type="date" id="entry-date" />
+              </div>
+              <div class="milk-entry-container">
+                <!-- Cow milk row -->
+                <div class="milk-entry-row cow-entry">
+                  <div class="milk-entry-header">🐄 Cow Milk</div>
+                  <div class="milk-entry-inputs">
+                    <div class="field mb0">
+                      <label>Quantity (litres)</label>
+                      <input type="number" id="entry-cow-qty" min="0" step="0.5" placeholder="0" />
+                    </div>
+                    
+                  </div>
+                </div>
+                <!-- Buffalo milk row -->
+                <div class="milk-entry-row buffalo-entry">
+                  <div class="milk-entry-header">🐃 Buffalo Milk</div>
+                  <div class="milk-entry-inputs">
+                    <div class="field mb0">
+                      <label>Quantity (litres)</label>
+                      <input type="number" id="entry-buf-qty" min="0" step="0.5" placeholder="0" />
+                    </div>
+                  
+                  </div>
+                </div>
+              </div>
+              <button class="btn-primary" id="add-entry-btn">Add Entry</button>
+              <div id="entry-error" class="error-msg hidden"></div>
+            </div>
+          </div>
+		  
+
+          </aside>
+        </div>
+      </div>  
+
+
+        <!-- ENTRIES LOG PAGE-->
+      <div id="page-log" class="page hidden">
+        <div class="panel log-panel">
+          <div class="log-header">
+            <h2 class="panel-title">📓 Entries Log</h2>
+            <div class="log-filter">
+              <input type="month" id="log-month-filter" />
+              <button class="btn-ghost small" id="clear-filter-btn">All</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="entries-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Qty (L)</th>
+                  <th>Cost (₹)</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="entries-body"></tbody>
+            </table>
+            <div id="no-entries-msg" class="empty-msg">No entries yet. Add your first entry from the Dashboard!</div>
+          </div>
+        </div>
+      </div>
+
+      
+    </main>
+  </div>
+  <footer>
+    <p>made with ❤️ Shubh Arya </p>
+  </footer>
+  <script type="module" src="firebase.js"></script>
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
