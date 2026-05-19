@@ -36,6 +36,7 @@ const App = (() => {
     document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
     document.getElementById(`page-${page}`).classList.remove('hidden');
     if (page === 'log') renderLog();
+    if (page === 'email') renderEmail();
   }
 
   // ── Prices ─────────────────────────────────────────
@@ -125,7 +126,8 @@ const App = (() => {
   async function render() {
     await renderSummary();
     if (!document.getElementById('page-log').classList.contains('hidden')) await renderLog();
-  }
+    if (!document.getElementById('page-email').classList.contains('hidden')) await renderEmail();
+    }
 
   async function renderLog() {
     const entries  = await Storage.getEntries();
@@ -152,6 +154,54 @@ const App = (() => {
         <td><button class="btn-delete" onclick="App.deleteEntry('${e.id}')" title="Delete">✕</button></td>
       </tr>
     `).join('');
+  }
+
+
+  async function renderEmail() {
+    const today = new Date();
+    const options = { year: 'numeric', month: 'long' };
+    const monthYear = today.toLocaleDateString('en-US', options);
+    const ymstr =  monthYear;
+
+    const entries = await Storage.getEntries();
+    let filtered  = entries;
+
+    if (_summaryRange === 'month') {
+      const ym = todayStr().slice(0, 7);
+      filtered = entries.filter(e => e.date.startsWith(ym));
+    }
+
+    const cowE = filtered.filter(e => e.type === 'cow');
+    const bufE = filtered.filter(e => e.type === 'buffalo');
+
+    const cowL    = cowE.reduce((s, e) => s + e.qty,  0);
+    const bufL    = bufE.reduce((s, e) => s + e.qty,  0);
+    const cowCost = cowE.reduce((s, e) => s + e.cost, 0);
+    const bufCost = bufE.reduce((s, e) => s + e.cost, 0);
+   
+    //
+   
+    const monthlabel       = document.getElementById('email-month-label');
+    monthlabel.textContent = `${ymstr}`;
+    const emailrows       = document.getElementById('email-preview-rows');
+    emailrows.innerHTML   = `<tr>
+                                <td>🐄 Cow Milk</td>
+                                <td>${cowL.toFixed(1)} L</td>
+                                <td>${cowCost}</td>
+                             </tr>
+                             <tr>
+                                <td>🐃 Buffalo Milk</td>
+                                <td>${bufL.toFixed(1)} L</td>
+                                <td>${bufCost}</td>
+                             </tr>` ;
+    const emailrowstotal       = document.getElementById('email-preview-foot');
+    emailrowstotal.innerHTML   = `<tr>
+                                    <td>Total</td>
+                                    <td>${(cowL + bufL).toFixed(1)} L</td>
+                                    <td>₹ ${(cowCost + bufCost)}</td>
+                                 </tr>`;
+
+   
   }
 
   async function renderSummary() {
@@ -218,5 +268,5 @@ const App = (() => {
     return `${d} ${months[+m - 1]} ${y}`;
   }
 
-  return { start, deleteEntry };
+  return { start, deleteEntry, renderEmail };
 })();

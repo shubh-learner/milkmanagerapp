@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Milk Balance Manager</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -62,7 +63,9 @@
     <nav class="app-nav">
       <button class="nav-tab active" data-page="dashboard">📊 Dashboard</button>
       <button class="nav-tab" data-page="log">📓 Entries Log</button>
+      <button class="nav-tab" data-page="email">✉️ Send Report</button>
     </nav>
+
 
     <main>
       <!-- PAGE: DASHBOARD -->
@@ -186,12 +189,52 @@
         </div>
       </div>
 
+        <!-- Email Send PAGE-->
+      <div id="page-email" class="page hidden">
+  <!-- Month selector + recipient -->
+        <div class="email-controls">
+          <label>Preview for month:
+            <select id="email-month-sel" onchange="App.buildEmailPreview()"></select>
+          </label>
+        </div>
+
+        <!-- Email card preview -->
+        <div class="email-card">
+          <div class="email-meta">
+            <div><span>From</span><span>milktracker@yourdomain.com</span></div>
+            <div><span>To</span><span id="email-to-display">recipient@example.com</span></div>
+            <div><span>Subject</span><span id="email-subject">Milk Summary — May 2026</span></div>
+          </div>
+          <div class="email-body">
+            <p>Hi there,</p>
+            <p>Here is your milk delivery summary for <strong id="email-month-label"></strong>:</p>
+            <table id="email-preview-table">
+              <thead><tr><th>Type</th><th>Qty (L)</th><th>Cost (₹)</th></tr></thead>
+              <tbody id="email-preview-rows"></tbody>
+              <tfoot id="email-preview-foot"></tfoot>
+            </table>
+            <p>Regards,<br>Milk Tracker App</p>
+          </div>
+          <div class="email-actions">
+            <button id="email-send-btn" onclick="App.sendEmail()">
+              ✉ Send via email
+            </button>
+            <button onclick="App.copyEmailText()">Copy</button>
+          </div>
+        </div>
+
+</div>
+
+
+
+
       
     </main>
   </div>
   <footer>
     <p>made with ❤️ Shubh Arya </p>
   </footer>
+  <script>emailjs.init("bj6MJBPPxywJLC9h4")</script>
   <script type="module" src="firebase.js"></script>
   <script src="auth.js"></script>
   <script src="app.js"></script>

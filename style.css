@@ -526,7 +526,7 @@ footer {
       position: fixed;   /* keeps it visible even when scrolling */
       bottom: 0;         /* aligns it to the bottom */
       right: 0;          /* aligns it to the right */
-      color:  #e8d4a0; 
+      color:  var(--brown-dk);
       padding: 10px 20px;
       border-top-left-radius: 8px; /* optional styling */
     }
@@ -537,4 +537,215 @@ footer {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ── Email Page Layout ─────────────────────────────── */
+#page-email {
+  padding: 1.5rem 1rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.email-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.email-controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+#email-month-sel {
+  font-size: 13px;
+  padding: 6px 10px;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: 8px;
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+#email-to {
+  flex: 1;
+  min-width: 180px;
+  font-size: 13px;
+  padding: 6px 10px;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: 8px;
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+}
+
+#email-to:focus,
+#email-month-sel:focus {
+  outline: none;
+  border-color: var(--color-border-primary);
+}
+
+/* ── Email Card ────────────────────────────────────── */
+.email-card {
+  border: 0.5px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.email-meta {
+  padding: 14px 18px;
+  border-bottom: 0.5px solid #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.email-meta div {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.email-meta div span:first-child {
+  color: #999;
+  min-width: 52px;
+}
+
+.email-meta div span:last-child {
+  color: #111;
+}
+
+/* ── Email Body ────────────────────────────────────── */
+.email-body {
+  padding: 20px 18px;
+  font-size: 14px;
+  color: #222;
+  line-height: 1.6;
+}
+
+.email-body p {
+  margin: 0 0 12px;
+}
+
+/* ── Summary Table ─────────────────────────────────── */
+#email-preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+#email-preview-table thead th {
+  text-align: left;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  background: #f7f7f7;
+  border: 0.5px solid #e5e5e5;
+}
+
+#email-preview-table tbody td {
+  padding: 7px 10px;
+  border: 0.5px solid #e5e5e5;
+  color: #222;
+}
+
+#email-preview-table tfoot td {
+  padding: 7px 10px;
+  border: 0.5px solid #e5e5e5;
+  font-weight: 600;
+  background: #f7f7f7;
+  color: #111;
+}
+
+/* ── Type Badges (reuse existing or add) ───────────── */
+.email-badge-cow {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #EAF3DE;
+  color: #3B6D11;
+}
+
+.email-badge-buf {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #E6F1FB;
+  color: #185FA5;
+}
+
+/* ── Action Buttons ────────────────────────────────── */
+.email-actions {
+  padding: 14px 18px;
+  border-top: 0.5px solid #e5e5e5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+#email-send-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+#email-send-btn:hover {
+  opacity: 0.82;
+}
+
+#email-send-btn:active {
+  transform: scale(0.98);
+}
+
+.email-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: #666;
+  border: 0.5px solid #ccc;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.email-copy-btn:hover {
+  background: #f5f5f5;
+}
+
+.email-sent-msg {
+  display: none;
+  font-size: 12px;
+  color: #3B6D11;
+  margin-left: auto;
+  align-items: center;
+  gap: 4px;
+}
+
+.email-sent-msg.visible {
+  display: inline-flex;
+}
 main { animation: fadeUp 0.35s ease; }
