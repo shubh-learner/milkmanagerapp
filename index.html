@@ -194,7 +194,9 @@
   <!-- Month selector + recipient -->
         <div class="email-controls">
           <label>Preview for month:
-            <select id="email-month-sel" onchange="App.buildEmailPreview()"></select>
+            <div class="email-filter">
+              <input type="month" id="email-month-filter" />
+            </div>
           </label>
         </div>
 
@@ -213,22 +215,18 @@
               <tbody id="email-preview-rows"></tbody>
               <tfoot id="email-preview-foot"></tfoot>
             </table>
+            <div id="email-no-entries-msg" class="empty-msg">No entries yet. Add your first entry from the Dashboard!</div>
+         
             <p>Regards,<br>Milk Tracker App</p>
           </div>
-          <div class="email-actions">
+           <div class="email-actions">
             <button id="email-send-btn" onclick="App.sendEmail()">
               ✉ Send via email
             </button>
             <button onclick="App.copyEmailText()">Copy</button>
           </div>
         </div>
-
-</div>
-
-
-
-
-      
+      </div>  
     </main>
   </div>
   <footer>

@@ -4,6 +4,7 @@ const App = (() => {
 
   let _summaryRange = 'month';
   let _logFilter    = '';
+  let _emailFilter  = '';
 
   // ── Boot ───────────────────────────────────────────
   async function start() {
@@ -18,7 +19,9 @@ const App = (() => {
     document.getElementById('entry-date').value = todayStr();
     const ym = todayStr().slice(0, 7);
     document.getElementById('log-month-filter').value = ym;
+    document.getElementById('email-month-filter').value = ym;
     _logFilter = ym;
+    _emailFilter = ym;
   }
 
   function todayStr() {
@@ -129,6 +132,7 @@ const App = (() => {
     if (!document.getElementById('page-email').classList.contains('hidden')) await renderEmail();
     }
 
+  // ── Render Entries Log ─────────────────────────────────────────
   async function renderLog() {
     const entries  = await Storage.getEntries();
     const tbody    = document.getElementById('entries-body');
@@ -156,20 +160,32 @@ const App = (() => {
     `).join('');
   }
 
+  // ── Render Email Preview ─────────────────────────────────────────
 
   async function renderEmail() {
     const today = new Date();
     const options = { year: 'numeric', month: 'long' };
     const monthYear = today.toLocaleDateString('en-US', options);
     const ymstr =  monthYear;
+    const noMsg    = document.getElementById('email-no-entries-msg');
+    const emaildata    = document.getElementById('email-preview-rows');
+    const emailFinal    = document.getElementById('email-preview-foot');
 
     const entries = await Storage.getEntries();
-    let filtered  = entries;
 
-    if (_summaryRange === 'month') {
-      const ym = todayStr().slice(0, 7);
-      filtered = entries.filter(e => e.date.startsWith(ym));
+    const filtered = _emailFilter
+      ? entries.filter(e => e.date.startsWith(_emailFilter))
+      : entries;
+
+    if (filtered.length === 0) {
+      emaildata.innerHTML = '';
+      emailFinal.innerHTML = '';
+      noMsg.classList.remove('hidden');
+      return;
     }
+    noMsg.classList.add('hidden');
+
+    const monthselected = document.getElementById('email-month-filter').value;
 
     const cowE = filtered.filter(e => e.type === 'cow');
     const bufE = filtered.filter(e => e.type === 'buffalo');
@@ -259,6 +275,11 @@ const App = (() => {
       document.getElementById('log-month-filter').value = '';
       renderLog();
     });
+
+    document.getElementById('email-month-filter').addEventListener('change', e => {
+      _emailFilter = e.target.value;
+      renderEmail();
+    })
   }
 
   // ── Helpers ────────────────────────────────────────
