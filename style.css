@@ -539,7 +539,7 @@ footer {
 
 /* ── Email Page Layout ─────────────────────────────── */
 #page-email {
-  padding: 1.5rem 1rem;
+  padding: .01rem 1rem;
   max-width: 640px;
   margin: 0 auto;
 }

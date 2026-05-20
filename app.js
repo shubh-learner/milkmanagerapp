@@ -61,20 +61,7 @@ const App = (() => {
     const msg = document.getElementById('price-saved-msg');
     msg.classList.remove('hidden');
     setTimeout(() => msg.classList.add('hidden'), 2000);
-    updateEntryPreviews();
     await renderSummary();
-  }
-
-  // ── Live Cost Preview ──────────────────────────────
-  async function updateEntryPreviews() {
-    const prices = await Storage.getPrices();
-    const cowQty = parseFloat(document.getElementById('entry-cow-qty').value) || 0;
-    const bufQty = parseFloat(document.getElementById('entry-buf-qty').value) || 0;
-    const total  = (cowQty * prices.cow) + (bufQty * prices.buffalo);
-
-    document.getElementById('preview-cow').textContent   = cowQty > 0 ? `₹${(cowQty * prices.cow).toFixed(2)}`       : '₹ —';
-    document.getElementById('preview-buf').textContent   = bufQty > 0 ? `₹${(bufQty * prices.buffalo).toFixed(2)}`   : '₹ —';
-    document.getElementById('preview-total').textContent = (cowQty + bufQty) > 0 ? `₹${total.toFixed(2)}`            : '₹ —';
   }
 
   // ── Add Entry ──────────────────────────────────────
@@ -108,7 +95,6 @@ const App = (() => {
     btn.textContent = 'Add Entry';
     document.getElementById('entry-cow-qty').value = '';
     document.getElementById('entry-buf-qty').value = '';
-    updateEntryPreviews();
     await render();
   }
 
@@ -166,7 +152,6 @@ const App = (() => {
     const noMsg    = document.getElementById('email-no-entries-msg');
     const emaildata    = document.getElementById('email-preview-rows');
     const emailFinal    = document.getElementById('email-preview-foot');
-    //const user = firebase.auth().currentUser;
 
     const entries = await Storage.getEntries();
     const currentuser = await Storage.getUser();
@@ -181,7 +166,6 @@ const App = (() => {
     monthlabel.textContent = `${formattedMonth}`;
     subjmonth.textContent = `${formattedMonth}`;
 
-    //console.log('Current user from Firebase Auth:', user);
     document.getElementById('email-to-display').textContent = currentuser ? currentuser.email : "Add an Email";
 
     if (filtered.length === 0) {
@@ -192,8 +176,6 @@ const App = (() => {
     }
     noMsg.classList.add('hidden');
 
-   
-   
     const cowE = filtered.filter(e => e.type === 'cow');
     const bufE = filtered.filter(e => e.type === 'buffalo');
 
@@ -220,10 +202,59 @@ const App = (() => {
                                     <td>${(cowL + bufL).toFixed(1)} L</td>
                                     <td>₹ ${(cowCost + bufCost)}</td>
                                  </tr>`;
-
-   
+    
   }
 
+  //Send Email  ─────────────────────────────────────────
+
+  async function sendEmail() {
+    const entries  = await Storage.getEntries();
+    const filtered = _emailFilter
+      ? entries.filter(e => e.date.startsWith(_emailFilter))
+      : entries;
+
+    const btn = document.getElementById('email-send-btn');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    const formattedMonth = formatmonth(_emailFilter);
+    const currentuser = await Storage.getUser();
+    const emailconstant = "bohra.temp@gmail.com"; // Set this to a fixed email or get from user input --- delete it later
+
+    const cowE = filtered.filter(e => e.type === 'cow');
+    const bufE = filtered.filter(e => e.type === 'buffalo');
+
+    const cowL    = cowE.reduce((s, e) => s + e.qty,  0);
+    const bufL    = bufE.reduce((s, e) => s + e.qty,  0);
+    const cowCost = cowE.reduce((s, e) => s + e.cost, 0);
+    const bufCost = bufE.reduce((s, e) => s + e.cost, 0);
+
+    const templateParams = {
+    to_email:     emailconstant, // Set this to a fixed email or get from user input
+    month:        formattedMonth,
+    cow_qty:      cowL.toFixed(1),
+    cow_cost:     cowCost.toFixed(2),
+    buffalo_qty:  bufL.toFixed(1),
+    buffalo_cost: bufCost.toFixed(2),
+    total_qty:    (cowL + bufL).toFixed(1),
+    total_cost:   (cowCost + bufCost).toFixed(2)
+    };
+
+    try {
+    await emailjs.send('service_sd0qc8b', 'template_ru4b3c6', templateParams); // enter template ID from EmailJS dashboard
+    btn.textContent = '✓ Sent!';
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = 'Send via Email';
+      }, 3000);
+    } catch (err) {
+    console.error('EmailJS error:', err);
+    btn.disabled = false;
+    btn.textContent = 'Failed — Retry';
+    }
+  }
+
+  // Summary on Dashboard ─────────────────────────────────────────
   async function renderSummary() {
     const entries = await Storage.getEntries();
     let filtered  = entries;
@@ -256,8 +287,6 @@ const App = (() => {
     });
 
     document.getElementById('save-prices-btn').addEventListener('click', savePrices);
-    document.getElementById('entry-cow-qty').addEventListener('input', updateEntryPreviews);
-    document.getElementById('entry-buf-qty').addEventListener('input', updateEntryPreviews);
     document.getElementById('add-entry-btn').addEventListener('click', addEntry);
 
     document.querySelectorAll('.toggle-btn').forEach(btn => {
@@ -284,6 +313,8 @@ const App = (() => {
       _emailFilter = e.target.value;
        renderEmail();
     });
+
+    document.getElementById('email-send-btn').addEventListener('click', sendEmail);
 
   }
 
