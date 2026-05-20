@@ -163,19 +163,26 @@ const App = (() => {
   // ── Render Email Preview ─────────────────────────────────────────
 
   async function renderEmail() {
-    const today = new Date();
-    const options = { year: 'numeric', month: 'long' };
-    const monthYear = today.toLocaleDateString('en-US', options);
-    const ymstr =  monthYear;
     const noMsg    = document.getElementById('email-no-entries-msg');
     const emaildata    = document.getElementById('email-preview-rows');
     const emailFinal    = document.getElementById('email-preview-foot');
+    //const user = firebase.auth().currentUser;
 
     const entries = await Storage.getEntries();
+    const currentuser = await Storage.getUser();
 
     const filtered = _emailFilter
       ? entries.filter(e => e.date.startsWith(_emailFilter))
       : entries;
+
+    const formattedMonth = formatmonth(_emailFilter);
+    const monthlabel     = document.getElementById('email-month-label');
+    const subjmonth      = document.getElementById('subject-month');
+    monthlabel.textContent = `${formattedMonth}`;
+    subjmonth.textContent = `${formattedMonth}`;
+
+    //console.log('Current user from Firebase Auth:', user);
+    document.getElementById('email-to-display').textContent = currentuser ? currentuser.email : "Add an Email";
 
     if (filtered.length === 0) {
       emaildata.innerHTML = '';
@@ -185,8 +192,8 @@ const App = (() => {
     }
     noMsg.classList.add('hidden');
 
-    const monthselected = document.getElementById('email-month-filter').value;
-
+   
+   
     const cowE = filtered.filter(e => e.type === 'cow');
     const bufE = filtered.filter(e => e.type === 'buffalo');
 
@@ -196,9 +203,6 @@ const App = (() => {
     const bufCost = bufE.reduce((s, e) => s + e.cost, 0);
    
     //
-   
-    const monthlabel       = document.getElementById('email-month-label');
-    monthlabel.textContent = `${ymstr}`;
     const emailrows       = document.getElementById('email-preview-rows');
     emailrows.innerHTML   = `<tr>
                                 <td>🐄 Cow Milk</td>
@@ -278,8 +282,9 @@ const App = (() => {
 
     document.getElementById('email-month-filter').addEventListener('change', e => {
       _emailFilter = e.target.value;
-      renderEmail();
-    })
+       renderEmail();
+    });
+
   }
 
   // ── Helpers ────────────────────────────────────────
@@ -287,6 +292,12 @@ const App = (() => {
     const [y, m, d] = str.split('-');
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return `${d} ${months[+m - 1]} ${y}`;
+  }
+
+  function formatmonth(str) {
+    const [y, m, d] = str.split('-');
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${months[+m - 1]} ${y}`;
   }
 
   return { start, deleteEntry, renderEmail };

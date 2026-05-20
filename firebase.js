@@ -24,6 +24,10 @@ const db          = getFirestore(firebaseApp);
 // ── Storage API (replaces storage.js) ──────────────
 window.Storage = {
 
+  async getUser() {
+    return auth.currentUser;
+  },
+  
   async getPrices() {
     const uid  = auth.currentUser.uid;
     const ref  = doc(db, "users", uid, "settings", "prices");
