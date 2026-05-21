@@ -155,7 +155,8 @@ const App = (() => {
 
     const entries = await Storage.getEntries();
     const currentuser = await Storage.getUser();
-
+    const btn = document.getElementById('email-send-btn');
+    
     const filtered = _emailFilter
       ? entries.filter(e => e.date.startsWith(_emailFilter))
       : entries;
@@ -172,9 +173,13 @@ const App = (() => {
       emaildata.innerHTML = '';
       emailFinal.innerHTML = '';
       noMsg.classList.remove('hidden');
+      btn.disabled = true;
+      btn.classList.add('disabled');
       return;
     }
     noMsg.classList.add('hidden');
+    btn.disabled = false;
+    btn.classList.remove('disabled');
 
     const cowE = filtered.filter(e => e.type === 'cow');
     const bufE = filtered.filter(e => e.type === 'buffalo');
@@ -219,7 +224,7 @@ const App = (() => {
 
     const formattedMonth = formatmonth(_emailFilter);
     const currentuser = await Storage.getUser();
-    const emailconstant = "bohra.temp@gmail.com"; // Set this to a fixed email or get from user input --- delete it later
+    const currentuseremail = currentuser.email; 
 
     const cowE = filtered.filter(e => e.type === 'cow');
     const bufE = filtered.filter(e => e.type === 'buffalo');
@@ -230,7 +235,7 @@ const App = (() => {
     const bufCost = bufE.reduce((s, e) => s + e.cost, 0);
 
     const templateParams = {
-    to_email:     emailconstant, // Set this to a fixed email or get from user input
+    to_email:     currentuseremail, 
     month:        formattedMonth,
     cow_qty:      cowL.toFixed(1),
     cow_cost:     cowCost.toFixed(2),
@@ -241,7 +246,7 @@ const App = (() => {
     };
 
     try {
-    await emailjs.send('service_sd0qc8b', 'template_ru4b3c6', templateParams); // enter template ID from EmailJS dashboard
+    await emailjs.send('service_sd0qc8b', 'template_ru4b3c6', templateParams); 
     btn.textContent = '✓ Sent!';
     setTimeout(() => {
       btn.disabled = false;
