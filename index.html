@@ -188,7 +188,7 @@
 
         <!-- Email Send PAGE-->
       <div id="page-email" class="page hidden">
-  <!-- Month selector + recipient -->
+      <!-- Month selector + recipient -->
         <div class="email-controls">
           <label>Preview for month:
             <div class="email-filter">
@@ -216,16 +216,16 @@
          
             <p>Regards,<br>Milk Tracker App</p>
           </div>
-           <div class="email-actions">
-            <button id="email-send-btn"> ✉ Send via email</button>
-          </div>
+           <div class="email-actions"><button id="email-send-btn"> ✉ Send via email</button></div>
+           <div id="email-limit-msg" >* Email limit - one email per day</div>
         </div>
       </div>  
     </main>
   </div>
   <footer>
-    <p>made with ❤️ Shubh Arya </p>
+    <p>made with ❤️ Shubh Arya </p>  
   </footer>
+ 
   <script>emailjs.init("bj6MJBPPxywJLC9h4")</script>
   <script type="module" src="firebase.js"></script>
   <script src="auth.js"></script>

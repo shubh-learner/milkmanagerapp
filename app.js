@@ -174,12 +174,24 @@ const App = (() => {
       emailFinal.innerHTML = '';
       noMsg.classList.remove('hidden');
       btn.disabled = true;
+      btn.textContent = 'No data to Send';
       btn.classList.add('disabled');
       return;
-    }
+    } 
     noMsg.classList.add('hidden');
-    btn.disabled = false;
-    btn.classList.remove('disabled');
+
+    const sent = await hasEmailSentToday();
+    if (sent) {
+      btn.disabled    = true;
+      btn.textContent = 'Send via Email';
+      btn.classList.add('disabled');
+      await checkEmailSendLimit();
+    } else {
+      btn.disabled    = false;
+      btn.textContent = 'Send via Email';
+      btn.classList.remove('disabled');
+      await checkEmailSendLimit();
+    }
 
     const cowE = filtered.filter(e => e.type === 'cow');
     const bufE = filtered.filter(e => e.type === 'buffalo');
@@ -207,7 +219,7 @@ const App = (() => {
                                     <td>${(cowL + bufL).toFixed(1)} L</td>
                                     <td>₹ ${(cowCost + bufCost)}</td>
                                  </tr>`;
-    
+   
   }
 
   //Send Email  ─────────────────────────────────────────
@@ -249,13 +261,41 @@ const App = (() => {
     await emailjs.send('service_sd0qc8b', 'template_ru4b3c6', templateParams); 
     btn.textContent = '✓ Sent!';
     setTimeout(() => {
-      btn.disabled = false;
-      btn.textContent = 'Send via Email';
+      markEmailSentToday();
+      checkEmailSendLimit();
       }, 3000);
     } catch (err) {
     console.error('EmailJS error:', err);
     btn.disabled = false;
     btn.textContent = 'Failed — Retry';
+    }
+  }
+    // ── Email Send Limit (per day one email) ─────────────────────
+  async function hasEmailSentToday() {
+    const data = await Storage.getEmailLimit();
+    if (!data) return false;
+    return data.lastSentDate === todayStr();
+  }
+
+  async function markEmailSentToday() {
+    await Storage.setEmailLimit();
+  }
+
+  async function checkEmailSendLimit() {
+    const sendBtn = document.getElementById('email-send-btn');
+    const limitmsg     = document.getElementById('email-limit-msg');
+
+    const sent = await hasEmailSentToday();
+
+    if (sent) {
+      sendBtn.disabled = true;
+      sendBtn.classList.add('disabled');
+      sendBtn.textContent = 'Email Sent Today';
+      limitmsg.textContent = '* Email already sent today. Try again tomorrow.';
+      limitmsg.classList.add('limit-reached');
+    } else {
+      limitmsg.textContent = '* Email limit - one email per day';
+      limitmsg.classList.remove('limit-reached');
     }
   }
 

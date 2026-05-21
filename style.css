@@ -499,7 +499,6 @@ td {
 .empty-msg {
   text-align: center;
   color: var(--brown-lt);
-  font-style: italic;
   padding: 2rem;
   font-size: 0.9rem;
 }
@@ -528,8 +527,14 @@ footer {
       right: 0;          /* aligns it to the right */
       color:  var(--brown-dk);
       padding: 10px 20px;
-      border-top-left-radius: 8px; /* optional styling */
+      z-index: 1000;
+      transition: transform 0.3s ease, opacity 0.3s ease;
     }
+.footer.hide-footer {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
 
 /* ── Animation ──────────────────────────────────────── */
 @keyframes fadeUp {
@@ -627,7 +632,28 @@ footer {
 }
 
 .email-body p {
-  margin: 0 0 12px;
+  margin: 0 0 8px;
+}
+
+/* ── Email Limit Message ───────────────────────────── */
+#email-limit-msg {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 8px;
+  margin-top: 8px;
+  transition: all 0.3s ease;
+
+  /* default — green */
+  color: #2e7d32;
+  background-color: #e8f5e9;
+  border: 0.5px solid #a5d6a7;
+}
+
+#email-limit-msg.limit-reached {
+  color: #c62828;
+  background-color: #fff5f5;
+  border: 0.5px solid #ef9a9a;
 }
 
 /* ── Summary Table ─────────────────────────────────── */
@@ -687,7 +713,7 @@ footer {
 
 /* ── Action Buttons ────────────────────────────────── */
 .email-actions {
-  padding: 14px 18px;
+  padding: 5px 18px;
   border-top: 0.5px solid #e5e5e5;
   display: flex;
   align-items: center;
