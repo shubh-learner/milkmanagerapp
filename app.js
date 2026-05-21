@@ -155,6 +155,7 @@ const App = (() => {
 
     const entries = await Storage.getEntries();
     const currentuser = await Storage.getUser();
+    const prices   = await Storage.getPrices();
     const btn = document.getElementById('email-send-btn');
     
     const filtered = _emailFilter
@@ -206,17 +207,20 @@ const App = (() => {
     emailrows.innerHTML   = `<tr>
                                 <td>🐄 Cow Milk</td>
                                 <td>${cowL.toFixed(1)} L</td>
+                                <td>${prices.cow}</td>
                                 <td>${cowCost}</td>
                              </tr>
                              <tr>
                                 <td>🐃 Buffalo Milk</td>
                                 <td>${bufL.toFixed(1)} L</td>
+                                <td>${prices.buffalo}</td>
                                 <td>${bufCost}</td>
                              </tr>` ;
     const emailrowstotal       = document.getElementById('email-preview-foot');
     emailrowstotal.innerHTML   = `<tr>
                                     <td>Total</td>
                                     <td>${(cowL + bufL).toFixed(1)} L</td>
+                                    <td></td>
                                     <td>₹ ${(cowCost + bufCost)}</td>
                                  </tr>`;
    
@@ -226,6 +230,7 @@ const App = (() => {
 
   async function sendEmail() {
     const entries  = await Storage.getEntries();
+    const prices   = await Storage.getPrices();
     const filtered = _emailFilter
       ? entries.filter(e => e.date.startsWith(_emailFilter))
       : entries;
@@ -251,7 +256,9 @@ const App = (() => {
     month:        formattedMonth,
     cow_qty:      cowL.toFixed(1),
     cow_cost:     cowCost.toFixed(2),
+    cow_price:    prices.cow,
     buffalo_qty:  bufL.toFixed(1),
+    buffalo_price: prices.buffalo,
     buffalo_cost: bufCost.toFixed(2),
     total_qty:    (cowL + bufL).toFixed(1),
     total_cost:   (cowCost + bufCost).toFixed(2)
