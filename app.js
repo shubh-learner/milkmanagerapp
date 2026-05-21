@@ -260,16 +260,15 @@ const App = (() => {
     try {
     await emailjs.send('service_sd0qc8b', 'template_ru4b3c6', templateParams); 
     btn.textContent = '✓ Sent!';
-    setTimeout(() => {
-      markEmailSentToday();
-      checkEmailSendLimit();
-      }, 3000);
+    await markEmailSentToday();
+    await checkEmailSendLimit();
     } catch (err) {
     console.error('EmailJS error:', err);
     btn.disabled = false;
     btn.textContent = 'Failed — Retry';
     }
   }
+
     // ── Email Send Limit (per day one email) ─────────────────────
   async function hasEmailSentToday() {
     const data = await Storage.getEmailLimit();
