@@ -120,7 +120,8 @@ function initAuth() {
         await signInWithEmailAndPassword(auth, email, password);
       }
     } catch (err) {
-      showAuthError(friendlyError(err.code || err.message));
+      const message = err.code ? friendlyError(err.code) : err.message;
+      showAuthError(message);
       submitBtn.disabled    = false;
       submitBtn.textContent = mode === "login" ? "Sign In" : "Create Account";
     }
@@ -136,16 +137,22 @@ function showAuthError(msg) {
 }
 
 function friendlyError(code) {
-  const map = {
-    "auth/user-not-found":       "No account found with this email.",
-    "auth/wrong-password":       "Incorrect password.",
-    "auth/email-already-in-use": "An account with this email already exists.",
-    "auth/invalid-email":        "Please enter a valid email address.",
-    "auth/weak-password":        "Password must be at least 6 characters.",
-    "auth/invalid-credential":   "Incorrect email or password.",
-    "auth/too-many-requests":    "Too many attempts. Please try again later.",
+  const errors = {
+    // signup errors
+    'auth/email-already-in-use':    'This email is already registered.',
+    'auth/invalid-email':           'Please enter a valid email address.',
+    'auth/weak-password':           'Password must be at least 6 characters.',
+
+    // login errors
+    'auth/user-not-found':          'No account found with this email.',
+    'auth/wrong-password':          'Incorrect password. Please try again.',
+    'auth/invalid-credential':      'Invalid email or password.',
+    'auth/too-many-requests':       'Too many attempts. Please try again later.',
+    'auth/user-disabled':           'This account has been disabled.',
+    'auth/network-request-failed':  'Network error. Check your connection.',
   };
-  return map[code] || "Something went wrong. Please try again.";
+
+  return errors[code] || 'Something went wrong. Try again later.';
 }
 
 // ── Boot ────────────────────────────────────────────
