@@ -242,6 +242,31 @@ const App = (() => {
     const formattedMonth = formatmonth(_emailFilter);
     const currentuser = await Storage.getUser();
     const currentuseremail = currentuser.email; 
+    const entriesTable = `<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse; font-size:14px; border-radius:8px; overflow:hidden;">
+                            <tr>
+                              <th style="background-color:#e6e6e6; color:#1b7fc4; padding:12px 16px; text-align:left; font-weight:700; letter-spacing:1px; font-size:12px; text-transform:uppercase; border-bottom:2px solid #1b7fc4;">Date</th>
+                              <th style="background-color:#e6e6e6; color:#1b7fc4; padding:12px 16px; text-align:center; font-weight:700; letter-spacing:1px; font-size:12px; text-transform:uppercase; border-bottom:2px solid #1b7fc4;">Type</th>
+                              <th style="background-color:#e6e6e6; color:#1b7fc4; padding:12px 16px; text-align:center; font-weight:700; letter-spacing:1px; font-size:12px; text-transform:uppercase; border-bottom:2px solid #1b7fc4;">Quantity (L)</th>
+                              <th style="background-color:#e6e6e6; color:#1b7fc4; padding:12px 16px; text-align:right; font-weight:700; letter-spacing:1px; font-size:12px; text-transform:uppercase; border-bottom:2px solid #1b7fc4;">Cost (₹)</th>
+                            </tr>
+                                <tbody>
+                                ${filtered.map((e, i) => `
+                                                <tr style="background-color:${i % 2 === 0 ? '#ffffff' : '#f7fbff'};">
+                                                  <td style="padding:10px 14px; border-bottom:1px solid #edf2f7; color:#2d3748;">${formatDate(e.date)}</td>
+                                                  <td style="padding:10px 14px; border-bottom:1px solid #edf2f7;">
+                                                    <span style="display:inline-block; padding:3px 10px; border-radius:99px; font-size:12px; font-weight:600;
+                                                      background-color:${e.type === 'cow' ? '#e8f5e9' : '#e3f2fd'};
+                                                      color:${e.type === 'cow' ? '#2e7d32' : '#1565c0'};">
+                                                      ${e.type === 'cow' ? '🐄 Cow' : '🐃 Buffalo'}
+                                                    </span>
+                                                  </td>
+                                                  <td style="padding:10px 14px; border-bottom:1px solid #edf2f7; color:#2d3748; text-align:center;">${e.qty.toFixed(1)} L</td>
+                                                  <td style="padding:10px 14px; border-bottom:1px solid #edf2f7; color:#2d3748; text-align:right;">₹ ${e.cost.toFixed(2)}</td>
+                                                </tr>
+                                              `).join('')}
+                                </tbody>
+				                  </table>
+                        `;
 
     const cowE = filtered.filter(e => e.type === 'cow');
     const bufE = filtered.filter(e => e.type === 'buffalo');
@@ -261,7 +286,8 @@ const App = (() => {
     buffalo_price: prices.buffalo,
     buffalo_cost: bufCost.toFixed(2),
     total_qty:    (cowL + bufL).toFixed(1),
-    total_cost:   (cowCost + bufCost).toFixed(2)
+    total_cost:   (cowCost + bufCost).toFixed(2),
+    entries_table: entriesTable
     };
 
     try {
