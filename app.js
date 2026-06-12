@@ -75,6 +75,9 @@ const App = (() => {
 
     if (!date)                      { showEntryError('Please select a date.'); return; }
     if (cowQty <= 0 && bufQty <= 0) { showEntryError('Enter quantity for at least one milk type.'); return; }
+    const existing = await Storage.getEntries();
+    const hasNoMilk = existing.some(e => e.date === date && e.type === 'nomilk');
+    if (hasNoMilk) { showEntryError('No Milk was recorded for this date. Cannot add another entry.'); return; }
 
     const btn       = document.getElementById('add-entry-btn');
     btn.disabled    = true;
@@ -102,6 +105,28 @@ const App = (() => {
     const el = document.getElementById('entry-error');
     el.textContent = msg;
     el.classList.remove('hidden');
+  }
+
+
+  // No Milk Entry ──────────────────────────────────────
+  async function addNoMilkEntry() {
+  const errEl = document.getElementById('entry-error');
+  errEl.classList.add('hidden');
+  const date = document.getElementById('entry-date').value;
+  if (!date) { showEntryError('Please select a date.'); return; }
+  const existing = await Storage.getEntries();
+  const hasAnyEntry = existing.some(e => e.date === date);
+  if (hasAnyEntry) { showEntryError('No-Milk entry already exists for this date. Cannot mark as No Milk.'); return; }
+
+  const btn = document.getElementById('no-milk-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  await Storage.addEntry({ date, type: 'nomilk', qty: 0, cost: 0 });
+
+  btn.disabled = false;
+  btn.textContent = '🚫 No Milk Today';
+  await render();
   }
 
   // ── Delete Entry ───────────────────────────────────
@@ -138,7 +163,7 @@ const App = (() => {
     tbody.innerHTML = filtered.map(e => `
       <tr class="${e.type === 'buffalo' ? 'buffalo-row' : ''}">
         <td>${formatDate(e.date)}</td>
-        <td><span class="type-badge ${e.type}">${e.type === 'cow' ? '🐄 Cow' : '🐃 Buffalo'}</span></td>
+        <td><span class="type-badge ${e.type}">${e.type === 'cow' ? '🐄 Cow' : e.type === 'buffalo' ? '🐃 Buffalo' : '🚫 No Milk'}</span></td>
         <td>${e.qty.toFixed(1)}</td>
         <td>₹${e.cost.toFixed(2)}</td>
         <td><button class="btn-delete" onclick="App.deleteEntry('${e.id}')" title="Delete">✕</button></td>
@@ -248,7 +273,7 @@ const App = (() => {
 
     const rows = filtered.map(e => {
       const date = formatDate(e.date).padEnd(15);
-      const type = (e.type === 'cow' ? 'Cow' : 'Buffalo').padEnd(10);
+      const type = (e.type === 'cow' ? 'Cow' : e.type === 'buffalo' ? 'Buffalo' : 'No Milk').padEnd(10);
       const qty  = (e.qty.toFixed(1) + ' L').padStart(8);
       const cost = ('Rs.' + e.cost.toFixed(2)).padStart(10);
       return `${date}| ${type}| ${qty} | ${cost}`;
@@ -356,6 +381,7 @@ const App = (() => {
 
     document.getElementById('save-prices-btn').addEventListener('click', savePrices);
     document.getElementById('add-entry-btn').addEventListener('click', addEntry);
+    document.getElementById('no-milk-btn').addEventListener('click', addNoMilkEntry);
 
     document.querySelectorAll('.toggle-btn').forEach(btn => {
       btn.addEventListener('click', () => {
