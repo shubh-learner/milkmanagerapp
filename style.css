@@ -540,6 +540,7 @@ td {
 }
 
 footer {
+      font-size: 9px;
       position: fixed;   /* keeps it visible even when scrolling */
       bottom: 0;         /* aligns it to the bottom */
       right: 0;          /* aligns it to the right */
