@@ -121,6 +121,7 @@ const App = (() => {
   const date = document.getElementById('entry-date').value;
   if (!date) { showEntryError('Please select a date.'); return; }
   const existing = await Storage.getEntries();
+  const successMsg = document.getElementById('entry-success');
   const hasAnyEntry = existing.some(e => e.date === date);
   if (hasAnyEntry) { showEntryError('No-Milk entry already exists for this date. Cannot mark as No Milk.'); return; }
 
@@ -129,7 +130,10 @@ const App = (() => {
   btn.textContent = 'Saving…';
 
   await Storage.addEntry({ date, type: 'nomilk', qty: 0, cost: 0 });
-
+  
+  successMsg.classList.remove('hidden');
+  setTimeout(() => successMsg.classList.add('hidden'), 5000);
+  
   btn.disabled = false;
   btn.textContent = '🚫 No Milk Today';
   await render();
