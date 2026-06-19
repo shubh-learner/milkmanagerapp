@@ -300,9 +300,11 @@ const App = (() => {
 
     const cowE = filtered.filter(e => e.type === 'cow');
     const bufE = filtered.filter(e => e.type === 'buffalo');
+    const nomilkE = filtered.filter(e => e.type === 'nomilk');
 
     const cowL    = cowE.reduce((s, e) => s + e.qty,  0);
     const bufL    = bufE.reduce((s, e) => s + e.qty,  0);
+    const nomilkDays = nomilkE.length;
     const cowCost = cowE.reduce((s, e) => s + e.cost, 0);
     const bufCost = bufE.reduce((s, e) => s + e.cost, 0);
 
@@ -315,6 +317,7 @@ const App = (() => {
     buffalo_qty:  bufL.toFixed(1),
     buffalo_price: prices.buffalo,
     buffalo_cost: bufCost.toFixed(2),
+    nomilk_days:  nomilkDays,
     total_qty:    (cowL + bufL).toFixed(1),
     total_cost:   (cowCost + bufCost).toFixed(2),
     entries_table: entrieslog
