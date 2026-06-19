@@ -78,6 +78,8 @@ const App = (() => {
     const existing = await Storage.getEntries();
     const hasNoMilk = existing.some(e => e.date === date && e.type === 'nomilk');
     if (hasNoMilk) { showEntryError('No Milk was recorded for this date. Cannot add another entry.'); return; }
+    const duplicateEntry = existing.some(e => e.date === date && (e.type === 'cow' || e.type === 'buffalo'));
+    if (duplicateEntry) { showEntryError('An entry already exists for this date. Please delete it first to add a new one.'); return; }
 
     const btn       = document.getElementById('add-entry-btn');
     btn.disabled    = true;
