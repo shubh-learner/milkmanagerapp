@@ -72,6 +72,7 @@ const App = (() => {
     const date   = document.getElementById('entry-date').value;
     const cowQty = parseFloat(document.getElementById('entry-cow-qty').value) || 0;
     const bufQty = parseFloat(document.getElementById('entry-buf-qty').value) || 0;
+    const successMsg = document.getElementById('entry-success');
 
     if (!date)                      { showEntryError('Please select a date.'); return; }
     if (cowQty <= 0 && bufQty <= 0) { showEntryError('Enter quantity for at least one milk type.'); return; }
@@ -100,6 +101,9 @@ const App = (() => {
     btn.textContent = 'Add Entry';
     document.getElementById('entry-cow-qty').value = '';
     document.getElementById('entry-buf-qty').value = '';
+
+    successMsg.classList.remove('hidden');
+    setTimeout(() => successMsg.classList.add('hidden'), 5000);
     await render();
   }
 
@@ -223,9 +227,11 @@ const App = (() => {
 
     const cowE = filtered.filter(e => e.type === 'cow');
     const bufE = filtered.filter(e => e.type === 'buffalo');
+    const nomilkE = filtered.filter(e => e.type === 'nomilk');
 
     const cowL    = cowE.reduce((s, e) => s + e.qty,  0);
     const bufL    = bufE.reduce((s, e) => s + e.qty,  0);
+    const nomilkDays = nomilkE.length;
     const cowCost = cowE.reduce((s, e) => s + e.cost, 0);
     const bufCost = bufE.reduce((s, e) => s + e.cost, 0);
    
@@ -242,6 +248,12 @@ const App = (() => {
                                 <td>${bufL.toFixed(1)} L</td>
                                 <td>${prices.buffalo}</td>
                                 <td>${bufCost}</td>
+                             </tr>
+                             <tr>
+                                <td>🚫 No Milk</td>
+                                <td>${nomilkDays} Days</td>
+                                <td>0</td>
+                                <td>0</td>
                              </tr>` ;
     const emailrowstotal       = document.getElementById('email-preview-foot');
     emailrowstotal.innerHTML   = `<tr>
