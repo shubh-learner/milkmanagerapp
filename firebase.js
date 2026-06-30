@@ -2,7 +2,7 @@
 import { initializeApp }                              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword,
          signInWithEmailAndPassword, signOut,
-         onAuthStateChanged }                         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+         onAuthStateChanged, GoogleAuthProvider, signInWithPopup }                         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc,
          collection, addDoc, deleteDoc,
          query, orderBy, getDocs }                    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -128,6 +128,15 @@ function initAuth() {
   });
 
   document.getElementById("logout-btn").addEventListener("click", () => signOut(auth));
+  
+  document.getElementById("google-signin-btn").addEventListener("click", async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (err) {
+      showAuthError(friendlyError(err.code || err.message));
+    }
+  });
 }
 
 function showAuthError(msg) {

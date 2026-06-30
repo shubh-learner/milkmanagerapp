@@ -99,6 +99,41 @@ body {
   color: var(--cream);
 }
 
+.btn-google {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.6rem;
+  background: white;
+  border: 2px solid var(--parchment);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--brown-dk);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-google:hover { background: var(--cream-dark); }
+.btn-google img { width: 18px; height: 18px; }
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--brown-lt);
+  font-size: 0.78rem;
+  margin: 1rem 0;
+}
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--parchment);
+}
+.auth-divider span { padding: 0 0.7rem; }
+
 /* ── Header ─────────────────────────────────────────── */
 header {
   background: var(--brown-dk);
