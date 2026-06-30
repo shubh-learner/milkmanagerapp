@@ -10,6 +10,7 @@ const App = (() => {
   async function start() {
     initDateDefaults();
     bindEvents();
+    await cleanupOldEntries();
     await loadPrices();
     await render();
   }
@@ -144,6 +145,19 @@ const App = (() => {
     await Storage.deleteEntry(id);
     await render();
     if (!document.getElementById('page-log').classList.contains('hidden')) renderLog();
+  }
+ 
+  //-- Delete two months old entries ---------------------------
+  async function cleanupOldEntries() {
+    const entries = await Storage.getEntries();
+    const cutoff  = new Date();
+    cutoff.setMonth(cutoff.getMonth() - 2);
+    const cutoffStr = cutoff.toISOString().slice(0, 10);
+
+    const oldEntries = entries.filter(e => e.date < cutoffStr);
+    for (const e of oldEntries) {
+      await Storage.deleteEntry(e.id);
+    }
   }
 
   // ── Render ─────────────────────────────────────────
