@@ -303,15 +303,14 @@ const App = (() => {
     const header    = `${'Date'.padEnd(15)}| ${'Type'.padEnd(10)}| ${'Qty'.padStart(8)} | ${'Cost'.padStart(10)}`;
     const separator = `${'-'.repeat(15)}+-${'-'.repeat(10)}+-${'-'.repeat(9)}-+-${'-'.repeat(10)}`;
 
-    const rows = filtered.map(e => {
+    const rowsemail = filtered.map(e => {
       const date = formatDate(e.date).padEnd(15);
       const type = (e.type === 'cow' ? 'Cow' : e.type === 'buffalo' ? 'Buffalo' : 'No Milk').padEnd(10);
       const qty  = (e.qty.toFixed(1) + ' L').padStart(8);
-      return `${date}| ${type}| ${qty} | ${cost}`;
+      return `${date}| ${type}| ${qty}`;
     }).join('\n');
 
-    // test 
-    const entrieslog = `${header}\n${separator}\n${rows}\n${separator}`;
+    const entrieslog = `${header}\n${separator}\n${rowsemail}\n${separator}`;
 
     const totalSize = new Blob([entrieslog]).size;
     console.log('entries size:', (totalSize / 1024).toFixed(2), 'KB');
