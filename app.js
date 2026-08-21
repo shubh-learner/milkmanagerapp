@@ -307,10 +307,10 @@ const App = (() => {
       const date = formatDate(e.date).padEnd(15);
       const type = (e.type === 'cow' ? 'Cow' : e.type === 'buffalo' ? 'Buffalo' : 'No Milk').padEnd(10);
       const qty  = (e.qty.toFixed(1) + ' L').padStart(8);
-      const cost = ('Rs.' + e.cost.toFixed(2)).padStart(10);
       return `${date}| ${type}| ${qty} | ${cost}`;
     }).join('\n');
 
+    // test 
     const entrieslog = `${header}\n${separator}\n${rows}\n${separator}`;
 
     const totalSize = new Blob([entrieslog]).size;
