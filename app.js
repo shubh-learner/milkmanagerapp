@@ -300,7 +300,7 @@ const App = (() => {
     const currentuser = await Storage.getUser();
     const currentuseremail = currentuser.email; 
 
-    const header    = `${'Date'.padEnd(15)}| ${'Type'.padEnd(10)}| ${'Qty'.padStart(8)} | ${'Cost'.padStart(10)}`;
+    const header    = `${'Date'.padEnd(15)}| ${'Type'.padEnd(10)}| ${'Qty'.padStart(8)}`;
     const separator = `${'-'.repeat(15)}+-${'-'.repeat(10)}+-${'-'.repeat(9)}`;
 
     const rowsemail = filtered.map(e => {
